@@ -1,5 +1,7 @@
 const LensVerifier = require("./lens");
+const NearVerifier = require("./near");
 
 module.exports = {
-  lens: LensVerifier
+  lens: LensVerifier,
+  near: NearVerifier
 };

@@ -1,5 +1,6 @@
 const express = require('express');
 const verifiers = require('./verifiers');
+const badger = require('./utils/nearbadger');
 
 const app = express();
 const port = 3000;
@@ -14,16 +15,37 @@ app.get('/ping', (req, res) => {
 
 app.post('/verify/:platform', (req, res) => {
   const { platform } = req.params;
-  const { accountId, handle, signature } = req.body;
-
+  const { accountId, handle, proof, signature } = req.body;
 
   if (platform in verifiers) {
-     return res.status(200).send(JSON.stringify({ accountId, handle, signature }));
+    const { near, [platform]: verifier } = verifiers;
+
+    if (near.verify(accountId, proof, signature)) {
+      if (verifier.verify(accountId, handle, proof)) {
+        return res.send(JSON.stringify({
+            token: badger.issue(accountId, proof)
+        }));
+      }
+    }
+  }
+
+  return res.status(400);
+});
+
+app.post('/challenge/:platform', (req, res) => {
+  const { platform } = req.params;
+  const { accountId, handle } = req.body;
+
+  if (platform in verifiers) {
+    const { [platform]: verifier } = verifiers;
+    return res.send(JSON.stringify({
+      challenge: verifier.getChallenge(accountId, handle)
+    }));
   }
 
   return res.status(400);
 });
 
 app.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
+  console.log(`Started server at http://localhost:${port}/`);
 });
