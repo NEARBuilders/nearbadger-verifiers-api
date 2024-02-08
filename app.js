@@ -8,8 +8,8 @@ const app = express();
 app.use(express.json());
 
 let requests = {};
-const MAX_REQUESTS = 5;
-const MAX_TIMESPAN = 30;
+const MAX_REQUESTS = 50;
+const MAX_TIMESPAN = 3600;
 
 app.use((req, res, next) => {
     let ip = req.ip;
