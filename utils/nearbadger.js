@@ -1,10 +1,9 @@
 const { Wallet } = require('@nearbadger/utils/near');
-const dotenv = require("dotenv");
-dotenv.config();
+const crypto = require('crypto');
 
 const NearBadger = {
   issue: ({accountId, platform, handle, proof}) => {
-    const nonce = 1;
+    const nonce = crypto.randomBytes(16).readUIntBE(0, 6);
     const message = `${accountId},${platform},${handle},${proof},${nonce}`;
     const rawSignature = Wallet.sign(message)?.signature || [];
 

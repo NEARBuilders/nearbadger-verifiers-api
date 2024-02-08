@@ -12,25 +12,23 @@ app.get('/ping', (req, res) => {
 
 app.post('/verify/:platform', (req, res) => {
   const { platform } = req.params;
-  const { accountId, handle, proof, signature } = req.body;
+  const { accountId, handle, proof } = req.body;
 
   if (platform in verifiers) {
-    const { near, [platform]: verifier } = verifiers;
+    const { [platform]: verifier } = verifiers;
 
-    if (near.verify(accountId, proof, signature)) {
-      if (verifier.verify(accountId, handle, proof)) {
-        return res.status(200).json(
-            badger.issue({
-              accountId,
-              platform,
-              handle,
-              proof
-            })
-        );
-      }
-
-      return res.status(401);
+    if (verifier.verify(accountId, handle, proof)) {
+      return res.status(200).json(
+          badger.issue({
+            accountId,
+            platform,
+            handle,
+            proof
+          })
+      );
     }
+
+    return res.status(401);
   }
 
   return res.status(400);

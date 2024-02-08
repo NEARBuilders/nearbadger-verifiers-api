@@ -1,4 +1,7 @@
 const { KeyPair } = require('near-api-js');
+const dotenv = require("dotenv");
+dotenv.config();
+
 const NEAR_MAINNET_RPC = "https://rpc.mainnet.near.org/";
 
 const NearRPC = {
@@ -37,7 +40,7 @@ const NearRPC = {
 
 const Wallet = {
     sign: (message) => {
-        const privateKey = process.env.SIGNER_PRIVATE_KEY;
+        const privateKey = process.env.SIGNER_PRIVATE_KEY || "";
         const keyPair = KeyPair.fromString(privateKey);
 
         return keyPair.sign(

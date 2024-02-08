@@ -23,7 +23,7 @@ const LensAPI = {
                     }
                }
            })
-        }).then((payload) => payload.json()).then(({ data: { profile: { ownedBy: { address } } } }) => address);
+        }).then((payload) => payload.json()).then((payload) => payload?.data?.profile?.ownedBy?.address);
     }
 };
 
