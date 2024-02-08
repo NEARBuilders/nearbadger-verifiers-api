@@ -7,9 +7,7 @@ const app = express();
 app.use(express.json());
 
 app.get('/ping', (req, res) => {
-  res.send(
-    JSON.stringify({"ping": "pong"})
-  );
+  return res.status(200).json({"ping": "pong"});
 });
 
 app.post('/verify/:platform', (req, res) => {
