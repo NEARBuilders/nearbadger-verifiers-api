@@ -1,3 +1,4 @@
+require('module-alias/register');
 const express = require('express');
 const verifiers = require('@nearbadger/verifiers');
 const badger = require('@nearbadger/utils/nearbadger');
