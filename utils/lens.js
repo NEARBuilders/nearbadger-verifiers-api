@@ -8,7 +8,6 @@ query Profile($profileRequest: ProfileRequest!) {
     }
 }`;
 
-
 const LensAPI = {
     getHandleOwner: (handle) => {
         return fetch(LENS_MAINNET_URL, {

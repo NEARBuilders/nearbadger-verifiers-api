@@ -1,6 +1,6 @@
 const express = require('express');
-const verifiers = require('./verifiers');
-const badger = require('./utils/nearbadger');
+const verifiers = require('@nearbadger/verifiers');
+const badger = require('@nearbadger/utils/nearbadger');
 
 const app = express();
 
@@ -19,10 +19,17 @@ app.post('/verify/:platform', (req, res) => {
 
     if (near.verify(accountId, proof, signature)) {
       if (verifier.verify(accountId, handle, proof)) {
-        return res.status(200).json({
-            token: badger.issue(accountId, proof)
-        });
+        return res.status(200).json(
+            badger.issue({
+              accountId,
+              platform,
+              handle,
+              proof
+            })
+        );
       }
+
+      return res.status(401);
     }
   }
 
@@ -35,6 +42,7 @@ app.post('/challenge/:platform', (req, res) => {
 
   if (platform in verifiers) {
     const { [platform]: verifier } = verifiers;
+
     return res.status(200).json({
       challenge: verifier.getChallenge(accountId, handle)
     });

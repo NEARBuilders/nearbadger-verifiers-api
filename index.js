@@ -1,3 +1,4 @@
+require('module-alias/register');
 const App = require('./app');
 const port = 3000;
 
