@@ -1,4 +1,4 @@
-const { Wallet } = require('@nearbadger/utils/near');
+const { Wallet } = require('./../utils/near');
 const crypto = require('crypto');
 
 const NearBadger = {

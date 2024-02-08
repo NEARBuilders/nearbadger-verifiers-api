@@ -1,4 +1,4 @@
-const { NearRPC } = require('@nearbadger/utils/near');
+const { NearRPC } = require('./../utils/near');
 const naj = require('near-api-js');
 const js_sha256 = require("js-sha256");
 

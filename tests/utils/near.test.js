@@ -1,4 +1,4 @@
-const { NearRPC } = require('@nearbadger/utils/near');
+const { NearRPC } = require('./../../utils/near');
 
 const NEAR_ACCOUNT = "mattb.near";
 const FULL_ACCESS_PUBLIC_KEY = "ed25519:8xZk1TURMBZpDEyX6GeBGrsBw6DMKtVV63h4vPznG6wE";
