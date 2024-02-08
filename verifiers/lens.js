@@ -6,7 +6,7 @@ const LensVerifier = {
     const fullHandle = LensVerifier.getFullHandle(handle);
     const challenge = LensVerifier.getChallenge(accountId, handle);
     const expectedSigner = await LensAPI.getHandleOwner(fullHandle);
-
+    
     return expectedSigner?.toLowerCase() === LensVerifier.getSignerAddress(challenge, proof).toLowerCase();
   },
   getChallenge: (accountId, handle) => `${accountId.toLowerCase()} owns the ${handle.toLowerCase()} handle`,

@@ -11,14 +11,15 @@ app.get('/ping', (req, res) => {
   return res.status(200).json({"ping": "pong"});
 });
 
-app.post('/verify/:platform', (req, res) => {
+app.post('/verify/:platform', async (req, res) => {
   const { platform } = req.params;
   const { accountId, handle, proof } = req.body;
 
   if (platform in verifiers) {
     const { [platform]: verifier } = verifiers;
+    const verified = await verifier.verify(accountId, handle, proof);
 
-    if (verifier.verify(accountId, handle, proof)) {
+    if (verified) {
       return res.status(200).json(
           badger.issue({
             accountId,
@@ -29,10 +30,12 @@ app.post('/verify/:platform', (req, res) => {
       );
     }
 
-    return res.status(401);
+    return res.status(401).send("Unauthorized");
   }
 
-  return res.status(400);
+  return res.status(400).json({
+      error: "Bad request"
+  });
 });
 
 app.post('/challenge/:platform', (req, res) => {
