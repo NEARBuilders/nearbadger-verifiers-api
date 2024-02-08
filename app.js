@@ -1,10 +1,10 @@
 require('module-alias/register');
 const express = require('express');
+
 const verifiers = require('./verifiers');
 const badger = require('./utils/nearbadger');
 
 const app = express();
-
 app.use(express.json());
 
 app.get('/ping', (req, res) => {
