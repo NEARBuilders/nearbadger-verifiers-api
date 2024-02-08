@@ -12,7 +12,7 @@ const LensVerifier = {
   getChallenge: (accountId, handle) => `${accountId.toLowerCase()} owns the ${handle.toLowerCase()} handle`,
   getFullHandle: (handle) => {
     let parts = handle.split(".");
-    let namespace = handle.split(".").pop();
+    let namespace = parts.pop();
 
     return `${namespace}/${parts.shift()}`;
   },
