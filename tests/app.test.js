@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require("./../app"); // Asegúrate de que la ruta sea correcta
+const app = require("./../app");
 
 describe('App', () => {
   describe("POST /challenge/:platform", () => {
