@@ -1,4 +1,4 @@
-const badger = require('@nearbadger/utils/nearbadger');
+const badger = require('nearbadger/utils/nearbadger');
 
 describe('NearBadger', () => {
   describe("sign", () => {

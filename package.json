@@ -15,14 +15,8 @@
   "jest": {
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@nearbadger/(.*)$": "<rootDir>/$1"
-    },
-    "setupFiles": [
-      "module-alias/register"
-    ]
-  },
-  "_moduleAliases": {
-    "@nearbadger": "./"
+      "^nearbadger/(.*)$": "<rootDir>/$1"
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",

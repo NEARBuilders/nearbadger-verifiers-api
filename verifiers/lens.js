@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const { LensAPI } = require('@nearbadger/utils/lens');
+const { LensAPI } = require('nearbadger/utils/lens');
 
 const LensVerifier = {
   verify: async (accountId, handle, proof) => {

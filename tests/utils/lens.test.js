@@ -1,4 +1,4 @@
-const { LensAPI } = require('@nearbadger/utils/lens');
+const { LensAPI } = require('nearbadger/utils/lens');
 
 const LENS_HANDLE = "lens/mattb";
 const OWNER_ADDRESS = "0x631ee9626051558896e5F97450479A9a9b22B652";

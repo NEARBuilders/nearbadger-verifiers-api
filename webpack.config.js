@@ -3,7 +3,7 @@ const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   target: 'node',
-  entry: './index.js',
+  entry: './app.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -25,7 +25,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@nearbadger': path.resolve(__dirname, './')
+      'nearbadger': path.resolve(__dirname, './')
     }
   }
 };

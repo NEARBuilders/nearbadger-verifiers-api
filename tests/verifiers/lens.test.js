@@ -1,4 +1,4 @@
-const LensVerifier = require('@nearbadger/verifiers/lens');
+const LensVerifier = require('nearbadger/verifiers/lens');
 
 const NEAR_ACCOUNT = "mattb.near";
 const LENS_HANDLE = "mattb.lens";
