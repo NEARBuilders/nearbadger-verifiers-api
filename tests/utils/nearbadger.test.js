@@ -10,10 +10,9 @@ describe('NearBadger', () => {
         }
 
         const result = await badger.issue('mattb.near', 'lens', 'mattb.lens', 'x');
-        const signature = Array.from(result.signature);
 
         expect(result.nonce).toEqual(expect.any(Number));
-        expect(signature).toEqual(expect.arrayContaining([
+        expect(result.signature).toEqual(expect.arrayContaining([
           expect.any(Number)
         ]));
       });

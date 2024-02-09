@@ -9,7 +9,7 @@ const NearBadger = {
 
     return {
       nonce,
-      signature: rawSignature
+      signature: Array.from(rawSignature)
     };
   }
 }
