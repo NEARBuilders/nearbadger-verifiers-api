@@ -2,7 +2,7 @@ import FarcasterVerifier from '../../verifiers/farcaster.js';
 
 const NEAR_ACCOUNT = "mattb.near";
 const FARCASTER_HANDLE = "0xmattb";
-const SIGNATURE = "0x6594ad54a7a0da347093a23ba52df1bb35a9c26f989eb7609862dfc8594a6e8c144efbe32c2da102d4c15ece26e13d85bc393084c673f5f107eebd0ed7a49cab1c";
+const SIGNATURE = "0x35e51df8b4fea8e5acb471b0cfd347d77dbce58563fdcc3bf79301aef3f4586774fbcb78cdeb00f7888ee781d07a7e8def10d8960f32dbb4ce0695dfdb7214ae1c";
 const verifier = new FarcasterVerifier();
 
 describe('FarcasterVerifier', () => {
