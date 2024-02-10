@@ -12,7 +12,7 @@ export default class FarcasterVerifier extends AbstractVerifier {
     ).length > 0;
   }
   getChallenge() {
-    let challenge = parent.getChallenge();
+    let challenge = super.getChallenge();
 
     return `${challenge} on farcaster`;
   }
