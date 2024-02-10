@@ -22,7 +22,7 @@ export class FarcasterAPI {
              ).then((payload) => {
                 return payload.json();
              }).then((result) => {
-                const verifications = result?.result?.verifications || [];
+                const verifications = result?.result?.verifications;
                 return verifications.map((verification) => verification.address);
              })
         });
@@ -36,7 +36,7 @@ export class FarcasterAPI {
          }).then((payload) => {
             return payload.json();
          }).then((result) => {
-            return result?.transfer?.to || "";
+            return result?.transfer?.to;
          });
     }
     getQueryURL(endpoint, params) {

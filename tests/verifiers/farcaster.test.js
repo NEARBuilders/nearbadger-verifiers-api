@@ -20,7 +20,7 @@ describe('FarcasterVerifier', () => {
   describe("getChallenge", () => {
     it('should return a valid challenge', async () => {
       const result = verifier.getChallenge(NEAR_ACCOUNT, FARCASTER_HANDLE);
-      expect(result).toBe('mattb.near owns the 0xmattb handle');
+      expect(result).toBe('mattb.near owns the 0xmattb handle on farcaster');
     });
   });
 })
