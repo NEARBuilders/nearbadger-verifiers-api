@@ -1,45 +1,48 @@
-const { KeyPair } = require('near-api-js');
-const dotenv = require("dotenv");
+import { KeyPair } from 'near-api-js';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const NEAR_MAINNET_RPC = "https://rpc.mainnet.near.org/";
 
-const NearRPC = {
-  id: 0,
-  send: (request) => fetch(NEAR_MAINNET_RPC, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(request)
-  }),
-  createRequest: ({ params }) => {
+export class NearRPC {
+    id = 0;
+
+    send(request) {
+        return fetch(NEAR_MAINNET_RPC, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request)
+        })
+    }
+    createRequest({ params }) {
     return {
         "id": ++this.id,
         "jsonrpc": "2.0",
         "method": "query",
         "params": params
     };
-  },
-  getAccountRawKeys: (accountId) => {
-      return NearRPC.send(
-          NearRPC.createRequest({
+  }
+  getAccountRawKeys(accountId) {
+      return this.send(
+          this.createRequest({
               params: [`access_key/${accountId}`, ""]
           })
       ).then((payload) => payload.json());
-  },
-  getAccountPubKeys: (accountId) => {
-      return NearRPC.getAccountRawKeys(accountId)
+  }
+  getAccountPubKeys(accountId) {
+      return this.getAccountRawKeys(accountId)
           .then(({ result }) => result?.keys.map((key) => key.public_key));
-  },
-  getAccountFullAccessPubKeys: (accountId) => {
-    return NearRPC.getAccountRawKeys(accountId)
+  }
+  getAccountFullAccessPubKeys(accountId) {
+    return this.getAccountRawKeys(accountId)
      .then(({ result }) => result?.keys.filter((key) => key.access_key.permission === "FullAccess").map((key) => key.public_key));
-  },
-};
+  }
+}
 
-const Wallet = {
-    sign: (message) => {
+export class Wallet {
+    sign(message) {
         const privateKey = process.env.SIGNER_PRIVATE_KEY || "";
         const keyPair = KeyPair.fromString(privateKey);
 
@@ -48,5 +51,3 @@ const Wallet = {
         );
     }
 }
-
-module.exports = { NearRPC, Wallet };

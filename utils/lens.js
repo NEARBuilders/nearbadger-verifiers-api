@@ -8,8 +8,8 @@ query Profile($profileRequest: ProfileRequest!) {
     }
 }`;
 
-const LensAPI = {
-    getHandleOwner: (handle) => {
+export class LensAPI {
+    getHandleOwner(handle) {
         return fetch(LENS_MAINNET_URL, {
            method: "POST",
            headers: {
@@ -26,5 +26,3 @@ const LensAPI = {
         }).then((payload) => payload.json()).then((payload) => payload?.data?.profile?.ownedBy?.address);
     }
 };
-
-module.exports = { LensAPI };
