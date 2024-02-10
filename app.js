@@ -1,8 +1,7 @@
-require('module-alias/register');
-const express = require('express');
-const { addSeconds, isAfter } = require('date-fns');
-const verifiers = require('./verifiers');
-const badger = require('./utils/nearbadger');
+import express from 'express';
+import { addSeconds, isAfter } from 'date-fns';
+import verifiers from './verifiers/index.js';
+import badger from './utils/nearbadger.js';
 
 const app = express();
 app.use(express.json());
@@ -15,9 +14,9 @@ app.use((req, res, next) => {
     let ip = req.ip;
 
     if (ip in requests) {
-        if (requests[ip].count == MAX_REQUESTS && !isAfter(new Date(), requests[ip].expire)) {
+        if (requests[ip].count === MAX_REQUESTS && !isAfter(new Date(), requests[ip].expire)) {
             return res.status(429).send();
-        } else if (requests[ip].count == MAX_REQUESTS) {
+        } else if (requests[ip].count === MAX_REQUESTS) {
             requests[ip].count = 1;
             requests[ip].expire = addSeconds(new Date(), MAX_TIMESPAN);
         } else {
@@ -38,7 +37,6 @@ app.get('/ping', (req, res) => {
 });
 
 app.post('/verify/:platform', async (req, res) => {
-    console.log(requests);
   const { platform } = req.params;
   const { accountId, handle, proof } = req.body;
 
@@ -80,4 +78,4 @@ app.post('/challenge/:platform', (req, res) => {
   return res.status(400);
 });
 
-module.exports = app;
+export { app as App };

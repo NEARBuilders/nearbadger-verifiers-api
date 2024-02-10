@@ -1,4 +1,5 @@
-const badger = require('./../../utils/nearbadger');
+import NearBadger from '../../utils/nearbadger.js';
+const badger = new NearBadger();
 
 describe('NearBadger', () => {
   describe("sign", () => {
@@ -9,7 +10,12 @@ describe('NearBadger', () => {
           return ;
         }
 
-        const result = await badger.issue('mattb.near', 'lens', 'mattb.lens', 'x');
+        const result = badger.issue({
+          accountId: 'mattb.near',
+          platform:  'lens',
+          handle: 'mattb.lens',
+          proof: 'x'
+        });
 
         expect(result.nonce).toEqual(expect.any(Number));
         expect(result.signature).toEqual(expect.arrayContaining([

@@ -1,28 +1,29 @@
-const ethers = require('ethers');
-const { LensAPI } = require('./../utils/lens');
+import { ethers } from 'ethers';
+import { LensAPI } from '../utils/lens.js';
 
-const LensVerifier = {
-  verify: async (accountId, handle, proof) => {
-    const fullHandle = LensVerifier.getFullHandle(handle);
-    const challenge = LensVerifier.getChallenge(accountId, handle);
-    const expectedSigner = await LensAPI.getHandleOwner(fullHandle);
+export default class LensVerifier {
+  async verify(accountId, handle, proof) {
+    const api = new LensAPI();
+    const fullHandle = this.getFullHandle(handle);
+    const challenge = this.getChallenge(accountId, handle);
+    const expectedSigner = await api.getHandleOwner(fullHandle);
     
-    return expectedSigner?.toLowerCase() === LensVerifier.getSignerAddress(challenge, proof).toLowerCase();
-  },
-  getChallenge: (accountId, handle) => `${accountId.toLowerCase()} owns the ${handle.toLowerCase()} handle`,
-  getFullHandle: (handle) => {
+    return expectedSigner?.toLowerCase() === this.getSignerAddress(challenge, proof).toLowerCase();
+  }
+  getChallenge(accountId, handle) {
+    return `${accountId.toLowerCase()} owns the ${handle.toLowerCase()} handle`;
+  }
+  getFullHandle(handle) {
     let parts = handle.split(".");
     let namespace = parts.pop();
 
     return `${namespace}/${parts.shift()}`;
-  },
-  getSignerAddress: (challenge, proof) => {
+  }
+  getSignerAddress(challenge, proof) {
     try {
       return ethers.verifyMessage(challenge, proof);
     } catch (e) {
       return "";
     }
   }
-};
-
-module.exports = LensVerifier;
+}
