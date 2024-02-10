@@ -1,7 +1,8 @@
 import { ethers } from 'ethers';
 import { LensAPI } from '../utils/lens.js';
+import AbstractVerifier from './verifier.js';
 
-export default class LensVerifier {
+export default class LensVerifier extends AbstractVerifier {
   async verify(accountId, handle, proof) {
     const api = new LensAPI();
     const fullHandle = this.getFullHandle(handle);
@@ -10,20 +11,10 @@ export default class LensVerifier {
     
     return expectedSigner?.toLowerCase() === this.getSignerAddress(challenge, proof).toLowerCase();
   }
-  getChallenge(accountId, handle) {
-    return `${accountId.toLowerCase()} owns the ${handle.toLowerCase()} handle`;
-  }
   getFullHandle(handle) {
     let parts = handle.split(".");
     let namespace = parts.pop();
 
     return `${namespace}/${parts.shift()}`;
-  }
-  getSignerAddress(challenge, proof) {
-    try {
-      return ethers.verifyMessage(challenge, proof);
-    } catch (e) {
-      return "";
-    }
   }
 }

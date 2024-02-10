@@ -1,5 +1,4 @@
-import NearBadger from '../../utils/nearbadger.js';
-const badger = new NearBadger();
+import badger from '../../utils/nearbadger.js';
 
 describe('NearBadger', () => {
   describe("sign", () => {
