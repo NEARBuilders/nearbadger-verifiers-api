@@ -2,7 +2,7 @@ import { Wallet } from './near.js';
 import crypto from 'crypto';
 
 export default class NearBadger {
-  issue({accountId, platform, handle, proof}) {
+  static issue({accountId, platform, handle, proof}) {
     const wallet = new Wallet();
     const nonce = crypto.randomBytes(16).readUIntBE(0, 6);
     const message = `${accountId},${platform},${handle},${proof},${nonce}`;
