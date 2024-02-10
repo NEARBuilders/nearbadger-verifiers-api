@@ -11,8 +11,8 @@ export default class FarcasterVerifier extends AbstractVerifier {
       (expectedSigner) => expectedSigner.toLowerCase() === this.getSignerAddress(challenge, proof).toLowerCase()
     ).length > 0;
   }
-  getChallenge() {
-    let challenge = super.getChallenge();
+  getChallenge(accountId, handle) {
+    let challenge = super.getChallenge(accountId, handle);
 
     return `${challenge} on farcaster`;
   }
