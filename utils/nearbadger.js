@@ -2,11 +2,14 @@ import { Wallet } from './near.js';
 import crypto from 'crypto';
 
 export default class NearBadger {
-  static issue({accountId, platform, handle, proof}) {
+  static sign(message) {
     const wallet = new Wallet();
+    return wallet.sign(message)?.signature;
+  }
+  static issue({accountId, platform, handle, proof}) {
     const nonce = crypto.randomBytes(16).readUIntBE(0, 6);
     const message = `${accountId},${platform},${handle},${proof},${nonce}`;
-    const rawSignature = wallet.sign(message)?.signature || [];
+    const rawSignature = NearBadger.sign(message) || [];
 
     return {
       nonce,
