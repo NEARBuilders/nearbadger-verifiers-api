@@ -78,8 +78,4 @@ app.post('/challenge/:platform', (req, res) => {
   return res.status(400);
 });
 
-const App = {
-  instance: app
-};
-
-export { App };
+export default app;
