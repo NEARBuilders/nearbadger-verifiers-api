@@ -8,29 +8,35 @@ const LENS_HANDLE = 'mattb.lens';
 const FARCASTER_HANDLE = '0xmattb';
 
 describe('App', () => {
+  const appRequest = request(App);
+  
   describe('POST /challenge/:platform', () => {
+    const getChallenge = async (platform, accountId, handle) => {
+      return appRequest
+      .post(`/challenge/${platform}`)
+      .set('Content-Type', 'application/json')
+      .send(JSON.stringify(
+        {
+          accountId,
+          handle
+        }
+      ))
+      .expect(200);
+    }
+
     it('should return a challenge for Lens', async () => {
-      checkChallenge('lens', ACCOUNT_ID, LENS_HANDLE, LENS_CHALLENGE_SIGNATURE)
+      const response = await getChallenge('lens', ACCOUNT_ID, LENS_HANDLE);
+
+      expect(response.body).toEqual(expect.objectContaining({
+        challenge: LENS_CHALLENGE_SIGNATURE
+      }));
     });
     it('should return a challenge for Farcaster', async () => {
-      checkChallenge('farcaster', ACCOUNT_ID, FARCASTER_HANDLE, FARCASTER_CHALLENGE_SIGNATURE)
+      const response = await getChallenge('farcaster', ACCOUNT_ID, FARCASTER_HANDLE);
+
+      expect(response.body).toEqual(expect.objectContaining({
+        challenge: FARCASTER_CHALLENGE_SIGNATURE
+      }));
     });
   });
 });
-
-const checkChallenge = async (platform, accountId, handle, expectedChallenge) => {
-  await request(App)
-  .post(`/challenge/${platform}`)
-  .set('Content-Type', 'application/json')
-  .send(JSON.stringify(
-    {
-      accountId,
-      handle
-    }
-  ))
-  .expect(200);
-
-  expect(response.body).toEqual(expect.objectContaining({
-    challenge: expectedChallenge
-  }));
-}
