@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import badger from '../utils/nearbadger';
+import badger from '../utils/nearbadger.js';
 
 export default class AbstractVerifier {
   getChallenge(accountId, handle) {
