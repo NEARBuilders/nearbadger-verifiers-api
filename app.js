@@ -82,4 +82,4 @@ const App = {
   instance: app
 };
 
-export default App;
+export { App };
