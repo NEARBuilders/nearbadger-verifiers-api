@@ -9,7 +9,7 @@ query Profile($profileRequest: ProfileRequest!) {
 }`;
 
 export class LensAPI {
-    getHandleOwner(handle) {
+    async getHandleOwner(handle) {
         return fetch(LENS_MAINNET_URL, {
            method: "POST",
            headers: {
