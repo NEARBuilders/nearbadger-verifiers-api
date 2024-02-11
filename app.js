@@ -63,17 +63,25 @@ app.post('/verify/:platform', async (req, res) => {
   });
 });
 
-app.post('/challenge/:platform', (req, res) => {
+app.post('/challenge/:platform', async (req, res) => {
   const { platform } = req.params;
   const { accountId, handle } = req.body;
 
   if (platform in verifiers) {
     const { [platform]: verifier } = verifiers;
+    const challenge = await verifier.getChallenge(accountId, handle);
 
     return res.status(200).json({
-      challenge: verifier.getChallenge(accountId, handle)
+      challenge
     });
   }
+
+  return res.status(400);
+});
+
+app.post('/callback', (req, res) => {
+  console.log("Callback received!");
+  console.log(req.params);
 
   return res.status(400);
 });

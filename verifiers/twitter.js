@@ -1,7 +1,7 @@
-import { LensAPI } from '../utils/lens.js';
+import { TwitterAPI } from '../utils/twitter.js';
 import AbstractVerifier from './verifier.js';
 
-export default class LensVerifier extends AbstractVerifier {
+export default class TwitterVerifier extends AbstractVerifier {
   async verify(accountId, handle, proof) {
     const api = new LensAPI();
     const fullHandle = this.getFullHandle(handle);
@@ -10,10 +10,10 @@ export default class LensVerifier extends AbstractVerifier {
     
     return expectedSigner?.toLowerCase() === this.getSignerAddress(challenge, proof).toLowerCase();
   }
-  getFullHandle(handle) {
-    let parts = handle.split(".");
-    let namespace = parts.pop();
-
-    return `${namespace}/${parts.shift()}`;
+  async getChallenge() {
+    const api = new TwitterAPI();
+    const challenge = await api.generateAuthURL();
+    
+    return challenge;
   }
 }
