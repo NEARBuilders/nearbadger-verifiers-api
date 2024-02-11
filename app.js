@@ -79,11 +79,4 @@ app.post('/challenge/:platform', async (req, res) => {
   return res.status(400);
 });
 
-app.post('/callback', (req, res) => {
-  console.log("Callback received!");
-  console.log(req.params);
-
-  return res.status(400);
-});
-
 export default app;

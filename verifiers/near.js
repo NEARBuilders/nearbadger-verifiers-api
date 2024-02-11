@@ -6,6 +6,9 @@ export default class NearVerifier {
     verify(accountId, message, signatureBase64) {
         const rpc = new NearRPC();
         const pubKeys = rpc.getAccountFullAccessPubKeys(accountId);
+        return this.testPublicKeys(pubKeys, message, signatureBase64);
+    }
+    testPublicKeys(pubKeys, message, signatureBase64) {
         const messageToVerify = Uint8Array.from(js_sha256.sha256.array(message));
         const signature = Buffer.from(signatureBase64, 'base64');
 
