@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import { Wallet } from '../utils/near';
 import badger from '../utils/nearbadger';
 
 export default class AbstractVerifier {
