@@ -38,11 +38,13 @@ app.get('/ping', (req, res) => {
 
 app.post('/verify/:platform', async (req, res) => {
   const { platform } = req.params;
-  const { accountId, handle, proof } = req.body;
+  const { accountId, handle, proof, challenge } = req.body;
 
   if (platform in verifiers) {
     const { [platform]: verifier } = verifiers;
-    const verified = await verifier.verify(accountId, handle, proof);
+
+    // @TODO: Implement new Challenge signature in order to get accountId and handle
+    const verified = await verifier.verify(accountId, handle, proof, challenge);
 
     if (verified) {
       return res.status(200).json(
@@ -63,15 +65,16 @@ app.post('/verify/:platform', async (req, res) => {
   });
 });
 
-app.post('/challenge/:platform', (req, res) => {
+app.post('/challenge/:platform', async (req, res) => {
   const { platform } = req.params;
   const { accountId, handle } = req.body;
 
   if (platform in verifiers) {
     const { [platform]: verifier } = verifiers;
+    const challenge = await verifier.getChallenge(accountId, handle);
 
     return res.status(200).json({
-      challenge: verifier.getChallenge(accountId, handle)
+      challenge
     });
   }
 

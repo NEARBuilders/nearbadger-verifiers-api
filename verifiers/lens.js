@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { LensAPI } from '../utils/lens.js';
 import AbstractVerifier from './verifier.js';
 

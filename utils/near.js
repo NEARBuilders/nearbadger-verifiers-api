@@ -7,7 +7,7 @@ const NEAR_MAINNET_RPC = "https://rpc.mainnet.near.org/";
 export class NearRPC {
     id = 0;
 
-    send(request) {
+    async send(request) {
         return fetch(NEAR_MAINNET_RPC, {
             method: "POST",
             headers: {
@@ -24,18 +24,18 @@ export class NearRPC {
         "params": params
     };
   }
-  getAccountRawKeys(accountId) {
+  async getAccountRawKeys(accountId) {
       return this.send(
           this.createRequest({
               params: [`access_key/${accountId}`, ""]
           })
       ).then((payload) => payload.json());
   }
-  getAccountPubKeys(accountId) {
+  async getAccountPubKeys(accountId) {
       return this.getAccountRawKeys(accountId)
           .then(({ result }) => result?.keys.map((key) => key.public_key));
   }
-  getAccountFullAccessPubKeys(accountId) {
+  async getAccountFullAccessPubKeys(accountId) {
     return this.getAccountRawKeys(accountId)
      .then(({ result }) => result?.keys.filter((key) => key.access_key.permission === "FullAccess").map((key) => key.public_key));
   }
