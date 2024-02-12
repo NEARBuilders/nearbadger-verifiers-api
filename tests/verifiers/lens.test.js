@@ -1,12 +1,14 @@
 import LensVerifier from '../../verifiers/lens.js';
 
-const NEAR_ACCOUNT = "mattb.near";
-const LENS_HANDLE = "mattb.lens";
-const SIGNATURE = "0x11e231e6fbd69343389ba9b6179b0108b914ad3e687172ba5d7748212058477d63e4aa09114e9a9b23b3cae4da7300577809b650bdf8842e0d1fae6cb8144f1c1c";
+const NEAR_ACCOUNT = 'mattb.near';
+const LENS_HANDLE = 'mattb.lens';
+const FULL_HANDLE = 'lens/mattb';
+const SIGNATURE = '0xd4896b34cb00534c443ff42e741ad1accb948c4daf56139f1104066d9972cbd46911021bd081e187bbd2a4c49da432d4828c6894a66c1a8789653023f02eb9361b';
+const CHALLENGE_SIGNATURE = 'KmkYBAZ2SbFGSZutp6G/3ESlPZYPswDKwfAroxmqyM/IlTDsmZcZCaGCzpdNZit+T6wK7kfha1/7u2wZyy1TBg==';
 const verifier = new LensVerifier();
 
 describe('LensVerifier', () => {
-  describe("verify", () => {
+  describe('verify', () => {
     it('should return true for a valid handle owner with a valid proof', async () => {
       const result = await verifier.verify(NEAR_ACCOUNT, LENS_HANDLE, SIGNATURE);
       expect(result).toBe(true);
@@ -17,17 +19,17 @@ describe('LensVerifier', () => {
     });
   });
 
-  describe("getChallenge", () => {
+  describe('getChallenge', () => {
     it('should return a valid challenge', async () => {
       const result = verifier.getChallenge(NEAR_ACCOUNT, LENS_HANDLE);
-      expect(result).toBe('mattb.near owns the mattb.lens handle');
+      expect(result).toBe(CHALLENGE_SIGNATURE);
     });
   });
 
-  describe("getFullHandle", () => {
+  describe('getFullHandle', () => {
     it('should return a valid full handle', async () => {
       const result = verifier.getFullHandle(LENS_HANDLE);
-      expect(result).toBe('lens/mattb');
+      expect(result).toBe(FULL_HANDLE);
     });
   });
 })

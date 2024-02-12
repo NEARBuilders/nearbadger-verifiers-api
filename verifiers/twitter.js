@@ -1,9 +1,9 @@
-import { TwitterApi } from 'twitter-api-v2';
 import badger from '../utils/nearbadger.js';
 import { TwitterAuth, TwitterAPI } from '../utils/twitter.js';
 import AbstractVerifier from './verifier.js';
 
 const DEFAULT_REDIRECT_URI = 'https://near.org/mattb.near/widget/NearBadger.Pages.Main';
+const TWITTER_CODE_CHALLENGE = 'nearbadger';
 
 export default class TwitterVerifier extends AbstractVerifier {
   auth = null;
@@ -15,15 +15,31 @@ export default class TwitterVerifier extends AbstractVerifier {
   }
   async verify(accountId, handle, proof, encodedChallenge) {
     const challenge = this.auth.decodeChallenge(encodedChallenge);
+    const isValidChallenge = this.verifyChallenge(challenge);
     
-    if (this.verifyChallenge(challenge)) {
-      const initialAccountId = challenge.challenge.accountId; // We can trust this value now
+    if (isValidChallenge) {
+      // We can trust these values now
+      const [ initialAccountId, initialHandle ] = challenge.challenge.toLowerCase().split(",");
+      accountId = accountId.toLowerCase();
 
-      if (initialAccountId === accountId) {
-        const api = new TwitterApi();
+      const isValidRequest = initialAccountId === accountId;
 
-        // @TODO: Initialize the Twitter API with user's token and verify if the Twitter handle
-        // matches the handle the user is trying to claim. If it matches - return true
+      if (isValidRequest) {
+        const accessToken = await TwitterAPI.getUserAccessToken({
+          code: proof,
+          redirectUri: this.getRedirectUri(),
+          codeVerifier: this.getCodeChallenge()
+        });
+
+        if (accessToken) {
+          const twitterHandle = await TwitterAPI.getUserHandle({
+            accessToken
+          });
+
+          if (initialHandle === twitterHandle.toLowerCase()) {
+            return true;
+          }
+        }
       }
     }
 
@@ -32,9 +48,16 @@ export default class TwitterVerifier extends AbstractVerifier {
   getChallenge(accountId, handle) {
     const state = this.auth.generateChallenge(accountId, handle);
     const redirectUri = this.getRedirectUri();
-    const challenge = this.auth.generateAuthURL(state, redirectUri);
+    const codeChallenge = this.getCodeChallenge();
 
-    return challenge;
+    return this.auth.generateAuthURL({
+      state,
+      codeChallenge, 
+      redirectUri
+    });
+  }
+  getCodeChallenge() {
+    return TWITTER_CODE_CHALLENGE;
   }
   getRedirectUri() {
       return DEFAULT_REDIRECT_URI;
