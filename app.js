@@ -47,14 +47,14 @@ app.post('/verify/:platform', async (req, res) => {
     const verified = await verifier.verify(accountId, handle, proof, challenge);
 
     if (verified) {
-      return res.status(200).json(
-          badger.issue({
-            accountId,
-            platform,
-            handle,
-            proof
-          })
-      );
+      const badge = await badger.issue({
+        accountId,
+        platform,
+        handle,
+        proof
+      });
+
+      return res.status(200).json(badge);
     }
 
     return res.status(401).send("Unauthorized");
