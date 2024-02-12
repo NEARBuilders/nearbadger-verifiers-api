@@ -9,14 +9,14 @@ describe('NearBadger', () => {
           return ;
         }
 
-        const result = badger.issue({
+        const result = await badger.issue({
           accountId: 'mattb.near',
           platform:  'lens',
           handle: 'mattb.lens',
           proof: 'x'
         });
 
-        expect(result.nonce).toEqual(expect.any(Number));
+        expect(result.expirationBlockHeight).toEqual(expect.any(Number));
         expect(result.signature).toEqual(expect.arrayContaining([
           expect.any(Number)
         ]));
