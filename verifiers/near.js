@@ -8,25 +8,6 @@ export default class NearVerifier {
         const pubKeys = await rpc.getAccountFullAccessPubKeys(accountId);
         return this.testPublicKeys(pubKeys, message, signatureBase64);
     }
-    async getconnectedContracts(accountId) {
-        const rpc = new NearRPC();
-        const result = await rpc.getAccessKeyList(accountId);
-        const contractsObject = result.keys.filter((x) => {
-            return x.access_key.permission.FunctionCall;
-          })
-        return contractsObject.length
-    }
-    async getAccountAge(accountId) {
-        const api = new NearApi();
-        const result = await api.getAccountInfo(accountId);
-        return result.account[0]?.created?.block_timestamp
-    }
-    async getAccountBalance(accountId) {
-        const api = new NearApi();
-        const result = await api.getAccountInfo(accountId);
-        const amountYocto = result.account[0]?.amount
-        return amountYocto // * (10**24)
-    }
     testPublicKeys(pubKeys, message, signatureBase64) {
         const messageToVerify = Uint8Array.from(Buffer.from(message));
         const signature = new Uint8Array(Buffer.from(signatureBase64, 'base64'));

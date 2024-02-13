@@ -64,6 +64,14 @@ export class NearRPC {
         return this.send(request)
             .then((data) => data.result);
     }
+
+    async getConnectedContracts(accountId) {
+        const result = await this.getAccessKeyList(accountId);
+        const contractsObject = result.keys.filter((x) => {
+            return x.access_key.permission.FunctionCall;
+          })
+        return contractsObject.length
+    }
 }
 
 export class Wallet {
@@ -82,5 +90,15 @@ export class NearApi {
     async getAccountInfo(accountId) {
         return fetch(`${NEAR_BLOCKS_API}/v1/account/${accountId}`)
             .then(payload => payload.json());
+    }
+
+    async getAccountAge(accountId) {
+        const result = await this.getAccountInfo(accountId);
+        return result.account[0]?.created?.block_timestamp
+    }
+    async getAccountBalance(accountId) {
+        const result = await this.getAccountInfo(accountId);
+        const amountYocto = result.account[0]?.amount
+        return amountYocto // * (10**24)
     }
 }

@@ -2,6 +2,7 @@ import express from 'express';
 import { addSeconds, isAfter } from 'date-fns';
 import verifiers from './verifiers/index.js';
 import badger from './utils/nearbadger.js';
+import api from './utils/api.js';
 
 const app = express();
 app.use(express.json());
@@ -85,22 +86,32 @@ app.post('/challenge/:platform', async (req, res) => {
 app.post('/sign/connected-contracts', async (req, res) => {
   try {
     const { accountId } = req.body;
-    const connectedContracts = await verifiers.near.getconnectedContracts(accountId);
-    const signature = await badger.issueSignedAccountInfoStamp({accountId, connectedContracts});
-    return res.status(200).json({ signature });
+    
+    const connectedContracts = await api.getConnectedContracts(accountId);
+    try {
+      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo: connectedContracts});
+      return res.status(200).json({ signature });
+    } catch (error) {
+      return res.status(500).json({ error: "Unable to sign message, Please try again" });
+    }
   } catch (error) {
-    return res.status(500).json({ error: error });
+    return res.status(500).json({ error: "unable to verify account info" });
   }
 });
 
 app.post('/sign/account-age', async (req, res) => {
   try {
     const { accountId } = req.body;
-    const accountInfo = await verifiers.near.getAccountAge(accountId);
-    const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
-    return res.status(200).json({ signature });
+    const accountInfo = await api.getAccountAge(accountId);
+    try {
+      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      return res.status(200).json({ signature });
+    }
+    catch (error) {
+      return res.status(500).json({ error: "Unable to sign message, Please try again" });
+    } 
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: "unable to verify account info" });
   }
 
 });
@@ -108,11 +119,16 @@ app.post('/sign/account-age', async (req, res) => {
 app.post('/sign/account-balance', async (req, res) => {
   try {
     const { accountId } = req.body;
-    const accountInfo = await verifiers.near.getAccountBalance(accountId);
-    const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
-    return res.status(200).json({ signature });
+    const accountInfo = await api.getAccountBalance(accountId);
+    try {
+      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      return res.status(200).json({ signature });
+    }
+    catch (error) {
+      return res.status(500).json({ error: "Unable to sign message, Please try again" });
+    }
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: "unable to verify account info" });
   }
 
 });
