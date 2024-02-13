@@ -103,7 +103,7 @@ export class NearApi {
     }
 }
 
-export default class NearAccountInfo {
+export class NearAccountInfo {
     static async getConnectedContracts(accountId) {
         const rpc = new NearRPC();
         const accountInfo = await rpc.getConnectedContracts(accountId);
