@@ -1,4 +1,4 @@
-import { NearRPC } from '../utils/near.js';
+import { NearApi, NearRPC } from '../utils/near.js';
 import naj from 'near-api-js';
 import js_sha256 from 'js-sha256';
 
@@ -15,6 +15,17 @@ export default class NearVerifier {
             return x.access_key.permission.FunctionCall;
           })
         return contractsObject.length
+    }
+    async getAccountAge(accountId) {
+        const api = new NearApi();
+        const result = await api.getAccountInfo(accountId);
+        return result.account[0]?.created?.block_timestamp
+    }
+    async getAccountBalance(accountId) {
+        const api = new NearApi();
+        const result = await api.getAccountInfo(accountId);
+        const amountYocto = result.account[0]?.amount
+        return amountYocto // * (10**24)
     }
     testPublicKeys(pubKeys, message, signatureBase64) {
         const messageToVerify = Uint8Array.from(Buffer.from(message));

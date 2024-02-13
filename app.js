@@ -86,11 +86,34 @@ app.post('/sign/connected-contracts', async (req, res) => {
   try {
     const { accountId } = req.body;
     const connectedContracts = await verifiers.near.getconnectedContracts(accountId);
-    const signature = await badger.issueSignedAccessKeyStampMessage({accountId, connectedContracts});
+    const signature = await badger.issueSignedAccountInfoStamp({accountId, connectedContracts});
     return res.status(200).json({ signature });
   } catch (error) {
     return res.status(500).json({ error: error });
   }
 });
 
+app.post('/sign/account-age', async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    const accountInfo = await verifiers.near.getAccountAge(accountId);
+    const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+    return res.status(200).json({ signature });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+});
+
+app.post('/sign/account-balance', async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    const accountInfo = await verifiers.near.getAccountBalance(accountId);
+    const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+    return res.status(200).json({ signature });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+});
 export default app;

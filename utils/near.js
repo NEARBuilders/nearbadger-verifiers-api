@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const NEAR_MAINNET_RPC = "https://rpc.mainnet.near.org/";
+const NEAR_BLOCKS_API = "https://api.nearblocks.io";
 
 export class NearRPC {
     id = 0;
@@ -73,5 +74,13 @@ export class Wallet {
         return keyPair.sign(
             new Uint8Array(Buffer.from(message))
         );
+    }
+}
+
+// write a NearApi class that uses the NEAR_BLOCKS_API as base url and implements a method called get account info that takes an accountId as parameter and returns the account info from the NEAR_BLOCKS_API from the {base_url}/v1/account/{accountId} endpoint
+export class NearApi {
+    async getAccountInfo(accountId) {
+        return fetch(`${NEAR_BLOCKS_API}/v1/account/${accountId}`)
+            .then(payload => payload.json());
     }
 }
