@@ -50,6 +50,19 @@ export class NearRPC {
     return this.send(request)
         .then(data => data?.result?.header?.height);
 }
+
+    async getAccessKeyList(accountId) {
+        const request = this.createRequest({
+            method: 'query',
+            params: {
+                request_type: 'view_access_key_list',
+                finality: 'final',
+                account_id: accountId
+            }
+        });
+        return this.send(request)
+            .then((data) => data.result);
+    }
 }
 
 export class Wallet {

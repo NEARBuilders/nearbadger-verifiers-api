@@ -33,4 +33,14 @@ export default class NearBadger {
 
     return verifier.testPublicKeys([ process.env.SIGNER_PUBLIC_KEY || '' ], message, signatureBase64);
   }
+  static async issueSignedAccessKeyStampMessage({accountId, accessKeyCount}) {
+    const expirationBlockHeight = await this.getExpirationBlockHeight();
+    const message = `${accountId},${accessKeyCount},${expirationBlockHeight}`;
+    const rawSignature = NearBadger.sign(message) || [];
+    return {
+      expirationBlockHeight,
+      signature: Array.from(rawSignature)
+    };
+  }
+
 }

@@ -81,4 +81,16 @@ app.post('/challenge/:platform', async (req, res) => {
   return res.status(400);
 });
 
+// make a route /sign/connected-contracts that gets the number of connected contracts for a given accountId and issues a signarue
+app.post('/sign/connected-contracts', async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    const connectedContracts = await verifiers.near.getconnectedContracts(accountId);
+    const signature = await badger.issueSignedAccessKeyStampMessage({accountId, connectedContracts});
+    return res.status(200).json({ signature });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+});
+
 export default app;

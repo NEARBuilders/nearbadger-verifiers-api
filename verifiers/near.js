@@ -8,6 +8,14 @@ export default class NearVerifier {
         const pubKeys = await rpc.getAccountFullAccessPubKeys(accountId);
         return this.testPublicKeys(pubKeys, message, signatureBase64);
     }
+    async getconnectedContracts(accountId) {
+        const rpc = new NearRPC();
+        const result = await rpc.getAccessKeyList(accountId);
+        const contractsObject = result.keys.filter((x) => {
+            return x.access_key.permission.FunctionCall;
+          })
+        return contractsObject.length
+    }
     testPublicKeys(pubKeys, message, signatureBase64) {
         const messageToVerify = Uint8Array.from(Buffer.from(message));
         const signature = new Uint8Array(Buffer.from(signatureBase64, 'base64'));
