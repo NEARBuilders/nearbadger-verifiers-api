@@ -1,4 +1,4 @@
-import { NearRPC } from '../utils/near.js';
+import { NearApi, NearRPC } from '../utils/near.js';
 import naj from 'near-api-js';
 import js_sha256 from 'js-sha256';
 
