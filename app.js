@@ -2,7 +2,7 @@ import express from 'express';
 import { addSeconds, isAfter } from 'date-fns';
 import verifiers from './verifiers/index.js';
 import badger from './utils/nearbadger.js';
-import api from './utils/api.js';
+import api from './utils/near.js';
 
 const app = express();
 app.use(express.json());

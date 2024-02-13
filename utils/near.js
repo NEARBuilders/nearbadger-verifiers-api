@@ -102,3 +102,23 @@ export class NearApi {
         return amountYocto // * (10**24)
     }
 }
+
+export default class NearAccountInfo {
+    static async getConnectedContracts(accountId) {
+        const rpc = new NearRPC();
+        const accountInfo = await rpc.getConnectedContracts(accountId);
+        return accountInfo;
+    }
+
+    static async getAccountBalance(accountId) {
+        const api = new NearApi();
+        const accountInfo = await api.getAccountBalance(accountId);
+        return accountInfo;
+    }
+
+    static async getAccountAge(accountId) {
+        const api = new NearApi();
+        const accountInfo = await api.getAccountAge(accountId);
+        return accountInfo;
+    }
+}
