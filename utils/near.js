@@ -8,7 +8,7 @@ const NEAR_BLOCKS_API = "https://api.nearblocks.io";
 export class NearRPC {
     id = 0;
 
-  async send(request) {
+    async send(request) {
         return fetch(NEAR_MAINNET_RPC, {
             method: "POST",
             headers: {
@@ -17,40 +17,40 @@ export class NearRPC {
             body: JSON.stringify(request)
         }).then(payload => payload.json())
     }
-  createRequest({ method, params }) {
-    return {
-        "id": ++this.id,
-        "jsonrpc": "2.0",
-        "method": method || "query",
-        "params": params
-    };
-  }
-  async getAccountRawKeys(accountId) {
-      return this.send(
-          this.createRequest({
-              params: [`access_key/${accountId}`, ""]
-          })
-      );
-  }
-  async getAccountPubKeys(accountId) {
-      return this.getAccountRawKeys(accountId)
-          .then(({ result }) => result?.keys.map((key) => key.public_key));
-  }
-  async getAccountFullAccessPubKeys(accountId) {
-    return this.getAccountRawKeys(accountId)
-     .then(({ result }) => result?.keys.filter((key) => key.access_key.permission === "FullAccess").map((key) => key.public_key));
-  }
-  async getCurrentBlockHeight() {
-    const request = this.createRequest({
-        method: 'block',
-        params: {
-            finality: 'final'
-        }
-    });
-    
-    return this.send(request)
-        .then(data => data?.result?.header?.height);
-}
+    createRequest({ method, params }) {
+        return {
+            "id": ++this.id,
+            "jsonrpc": "2.0",
+            "method": method || "query",
+            "params": params
+        };
+    }
+    async getAccountRawKeys(accountId) {
+        return this.send(
+            this.createRequest({
+                params: [`access_key/${accountId}`, ""]
+            })
+        );
+    }
+    async getAccountPubKeys(accountId) {
+        return this.getAccountRawKeys(accountId)
+            .then(({ result }) => result?.keys.map((key) => key.public_key));
+    }
+    async getAccountFullAccessPubKeys(accountId) {
+        return this.getAccountRawKeys(accountId)
+        .then(({ result }) => result?.keys.filter((key) => key.access_key.permission === "FullAccess").map((key) => key.public_key));
+    }
+    async getCurrentBlockHeight() {
+        const request = this.createRequest({
+            method: 'block',
+            params: {
+                finality: 'final'
+            }
+        });
+        
+        return this.send(request)
+            .then(data => data?.result?.header?.height);
+    }
 
     async getAccessKeyList(accountId) {
         const request = this.createRequest({
@@ -69,7 +69,7 @@ export class NearRPC {
         const result = await this.getAccessKeyList(accountId);
         const contractsObject = result.keys.filter((x) => {
             return x.access_key.permission.FunctionCall;
-          })
+            })
         return contractsObject.length
     }
 }
