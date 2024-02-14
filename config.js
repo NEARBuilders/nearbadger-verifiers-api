@@ -5,6 +5,7 @@ export const ALLOW_LIST = [
     "https://near.social", 
     "https://nearbadger.vercel.app", 
     "https://potlock.org",
+    "https://jutsu.ai",
     "http://localhost:3000"
 ];
 export const MAX_REQUESTS = 50;
