@@ -33,4 +33,15 @@ export default class NearBadger {
 
     return verifier.testPublicKeys([ process.env.SIGNER_PUBLIC_KEY || '' ], message, signatureBase64);
   }
+  static async issueSignedAccountInfoStamp({accountId, accountInfo}) {
+    const expirationBlockHeight = await this.getExpirationBlockHeight();
+    const message = `${accountId},${accountInfo},${expirationBlockHeight}`;
+    const rawSignature = NearBadger.sign(message) || [];
+    return {
+      expirationBlockHeight,
+      signature: Array.from(rawSignature),
+      accountInfo
+    };
+  }
+
 }
