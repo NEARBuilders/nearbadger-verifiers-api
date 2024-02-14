@@ -4,8 +4,16 @@ export const ALLOW_LIST = [
     "https://near.org", 
     "https://near.social", 
     "https://nearbadger.vercel.app", 
-    "https://potlock.org",
     "https://jutsu.ai",
+    "https://potlock.org",
+    "https://bos.potlock.org",
+    "https://bos.potlock.io",
+    "https://bos.potlock.app",
+    "https://bos.potlock.xyz",
+    "https://app.potlock.org",
+    "https://app.potlock.io",
+    "https://app.potlock.xyz",
+    "https://app.potlock.app",
     "http://localhost:3000"
 ];
 export const MAX_REQUESTS = 50;
