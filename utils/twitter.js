@@ -16,7 +16,6 @@ export class TwitterAPI {
     static async getUserAccessToken(params) {
         const credentials = `${process.env.TWITTER_OAUTH_CLIENT_ID}:${process.env.TWITTER_OAUTH_CLIENT_SECRET}`;
         const encodedCredentials = Buffer.from(credentials).toString('base64');
-        const url = this.getFullURL(TWITTER_OAUTH_TOKEN_ENDPOINT);
         const options = {
             method: 'POST',
             headers: {
@@ -28,7 +27,7 @@ export class TwitterAPI {
             ),
         };
 
-        return this.request(TWITTER_OAUTH_TOKEN_ENDPOINT)
+        return this.request(TWITTER_OAUTH_TOKEN_ENDPOINT, options)
         .then(
             (info) => info?.access_token || ''
         );
