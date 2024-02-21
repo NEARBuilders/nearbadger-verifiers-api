@@ -112,4 +112,60 @@ app.post('/sign/account-balance', async (req, res) => {
   }
 
 });
+
+app.post('/sign/account/social-followers', async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    console.log("open req...", accountId)
+    const accountInfo = await NearAccountInfo.getAccountSocialFollowers(accountId);
+
+    try {
+      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      return res.status(200).json({ signature });
+    }
+    catch (error) {
+      return res.status(500).json({ error: "Unable to sign message. Please try again" });
+    } 
+  } catch (error) {
+    return res.status(500).json({ error: `Unable to verify account near social info` });
+  }
+
+});
+
+app.post('/sign/account/social-followings', async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    const accountInfo = await NearAccountInfo.getAccountSocialFollowings(accountId);
+
+    try {
+      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      return res.status(200).json({ signature });
+    }
+    catch (error) {
+      return res.status(500).json({ error: "Unable to sign message. Please try again" });
+    } 
+  } catch (error) {
+    return res.status(500).json({ error: "Unable to verify account near social info" });
+  }
+
+});
+
+
+app.post('/sign/account/transaction-count', async (req, res) => {
+  try {
+    const { accountId } = req.body;
+    const accountInfo = await NearAccountInfo.getAccountTxnInfo(accountId);
+
+    try {
+      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      return res.status(200).json({ signature });
+    }
+    catch (error) {
+      return res.status(500).json({ error: "Unable to sign message. Please try again" });
+    } 
+  } catch (error) {
+    return res.status(500).json({ error: "Unable to verify account txn info" });
+  }
+
+});
 export default app;
