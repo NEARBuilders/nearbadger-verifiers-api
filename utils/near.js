@@ -4,6 +4,7 @@ dotenv.config();
 
 const NEAR_MAINNET_RPC = "https://rpc.mainnet.near.org/";
 const NEAR_BLOCKS_API = "https://api.nearblocks.io";
+const NEAR_SOCIAL_API = "https://api.near.social"
 
 export class NearRPC {
     id = 0;
@@ -92,6 +93,11 @@ export class NearApi {
             .then(payload => payload.json());
     }
 
+    async getAccountTxnInfo(accountId) {
+        return fetch(`${NEAR_BLOCKS_API}/v1/account/${accountId}/txns/count`)
+            .then(payload => payload.json());
+    }
+
     async getAccountAge(accountId) {
         const result = await this.getAccountInfo(accountId);
         return result.account[0]?.created?.block_timestamp
@@ -100,6 +106,16 @@ export class NearApi {
         const result = await this.getAccountInfo(accountId);
         const amountYocto = result.account[0]?.amount
         return amountYocto // * (10**24)
+    }
+
+    async getNearSocialFollowInfo(accountId, payload) {
+        return fetch(`${NEAR_SOCIAL_API}/keys`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        }).then(payload => payload.json())
     }
 }
 
@@ -120,5 +136,27 @@ export class NearAccountInfo {
         const api = new NearApi();
         const accountInfo = await api.getAccountAge(accountId);
         return accountInfo;
+    }
+
+    static async getAccountSocialFollowers(accountId) {
+        const api = new NearApi();
+        const payload = {"keys": [`*/graph/follow/${accountId}`]}
+        const accountInfo = await api.getNearSocialFollowInfo(accountId, payload);
+        const infoCount = Object.keys(accountInfo).length;
+        return infoCount;
+    }
+
+    static async getAccountSocialFollowings(accountId) {
+        const api = new NearApi();
+        const payload = {"keys": [`${accountId}/graph/follow/*`]}
+        const accountInfo = await api.getNearSocialFollowInfo(accountId, payload);
+        const infoCount = Object.keys(accountInfo[accountId]['graph']['follow']).length;
+        return infoCount;
+    }
+
+    static async getAccountTxnInfo(accountId) {
+        const api = new NearApi();
+        const accountInfo = await api.getAccountTxnInfo(accountId);
+        return accountInfo['txns'][0]['count'];
     }
 }
