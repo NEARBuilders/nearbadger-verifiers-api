@@ -50,7 +50,7 @@ app.post('/challenge/:platform', async (req, res) => {
 
   if (platform in verifiers) {
     const { [platform]: verifier } = verifiers;
-    const challenge = await verifier.getChallenge(accountId, handle);
+    const challenge = await verifier.getChallenge(accountId, handle, platform);
 
     return res.status(200).json({
       challenge
