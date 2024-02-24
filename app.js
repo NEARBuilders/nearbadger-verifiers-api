@@ -44,7 +44,7 @@ app.post('/verify/:platform', async (req, res) => {
       if (platform === "twitter") {
         return res.status(200).json({
           ...badge,
-          handle: handle?.toLowerCase()
+          handle: handle
         });
       }
 
@@ -182,4 +182,5 @@ app.post('/sign/account/transaction-count', async (req, res) => {
   }
 
 });
+
 export default app;

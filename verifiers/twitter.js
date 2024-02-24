@@ -26,7 +26,7 @@ export default class TwitterVerifier extends AbstractVerifier {
       if (typeof twitterHandle === "string") {
         return {
           result: true,
-          handle: twitterHandle
+          handle: twitterHandle.toLowerCase()
         };
       }
     }
