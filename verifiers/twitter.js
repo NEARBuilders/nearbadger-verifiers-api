@@ -32,9 +32,7 @@ export default class TwitterVerifier extends AbstractVerifier {
         });
 
         if (accessToken) {
-          const twitterHandle = await TwitterAPI.getUserHandle({
-            accessToken
-          });
+          const twitterHandle = await TwitterAPI.getUserHandle(accessToken);
 
           if (initialHandle === twitterHandle.toLowerCase()) {
             return true;

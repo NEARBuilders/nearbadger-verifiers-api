@@ -116,7 +116,6 @@ app.post('/sign/account-balance', async (req, res) => {
 app.post('/sign/account/social-followers', async (req, res) => {
   try {
     const { accountId } = req.body;
-    console.log("open req...", accountId)
     const accountInfo = await NearAccountInfo.getAccountSocialFollowers(accountId);
 
     try {

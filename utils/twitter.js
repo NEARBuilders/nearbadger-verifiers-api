@@ -10,7 +10,9 @@ export class TwitterAPI {
     static async request(endpoint, options) {
         return fetch(this.getFullURL(endpoint), options)
         .then(
-            (data) => data.json()
+            (data) => {
+                return data.json();
+            }
         );
     }
     static async getUserAccessToken(params) {
@@ -29,7 +31,9 @@ export class TwitterAPI {
 
         return this.request(TWITTER_OAUTH_TOKEN_ENDPOINT, options)
         .then(
-            (info) => info?.access_token || ''
+            (info) => {
+                return info?.access_token || '';
+            }
         );
     }
     static async getUserHandle(accessToken) {
@@ -44,7 +48,7 @@ export class TwitterAPI {
             (user) => user?.data?.username || ''
         );
     }
-    getAccessTokenParams({
+    static getAccessTokenParams({
         code,
         redirectUri,
         codeVerifier
@@ -57,7 +61,7 @@ export class TwitterAPI {
             code_verifier: codeVerifier
         };
     }
-    getFullURL(endpoint) {
+    static getFullURL(endpoint) {
         return `${TWITTER_API_URL}/${endpoint}`;
     }
 }
@@ -89,7 +93,8 @@ export class TwitterAuth {
     }
 
     decodeChallenge(encodedChallenge) {
-        const decodedChallenge = Buffer.from(encodedChallenge, "base64").toString('utf-8');
+        const sanitizedEncodedChallenge = decodeURIComponent(encodedChallenge);
+        const decodedChallenge = Buffer.from(sanitizedEncodedChallenge, "base64").toString('utf-8');
         const [accountId, handle, platform, nonce, encodedSignature] = decodedChallenge.split(',');
 
         return {
@@ -109,7 +114,7 @@ export class TwitterAuth {
 
     getBaseURL({ clientId, codeChallenge, state, redirectUri }) {
         const searchParams = new URLSearchParams({
-            state,
+            state: `twitter.${state}`,
             code_challenge_method: 'plain',
             code_challenge: codeChallenge,
             client_id: clientId,
