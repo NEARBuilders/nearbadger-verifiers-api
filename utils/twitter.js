@@ -67,11 +67,11 @@ export class TwitterAPI {
 }
 
 export class TwitterAuth {
-    generateAuthURL({state, codeChallenge, redirectUri}) {
+    generateAuthURL({state, codeChallenge, redirectUri, handle}) {
         return this.getBaseURL({
             clientId: process.env.TWITTER_OAUTH_CLIENT_ID || '',
             codeChallenge,
-            state,
+            state: `twitter.${handle}.${state}`,
             redirectUri
         });
     }
@@ -114,7 +114,7 @@ export class TwitterAuth {
 
     getBaseURL({ clientId, codeChallenge, state, redirectUri }) {
         const searchParams = new URLSearchParams({
-            state: `twitter.${state}`,
+            state,
             code_challenge_method: 'plain',
             code_challenge: codeChallenge,
             client_id: clientId,

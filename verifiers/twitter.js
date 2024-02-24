@@ -49,6 +49,7 @@ export default class TwitterVerifier extends AbstractVerifier {
     const codeChallenge = this.getCodeChallenge();
 
     return this.auth.generateAuthURL({
+      handle,
       state,
       codeChallenge, 
       redirectUri
