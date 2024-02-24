@@ -2,7 +2,7 @@ import badger from '../utils/nearbadger.js';
 import { TwitterAuth, TwitterAPI } from '../utils/twitter.js';
 import AbstractVerifier from './verifier.js';
 
-const DEFAULT_REDIRECT_URI = 'https://near.org/mattb.near/widget/NearBadger.Pages.Main';
+const DEFAULT_REDIRECT_URI = 'https://near.social/mattb.near/widget/NearBadger.Pages.Authentication';
 const TWITTER_CODE_CHALLENGE = 'nearbadger';
 
 export default class TwitterVerifier extends AbstractVerifier {
