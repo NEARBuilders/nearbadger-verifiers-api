@@ -17,13 +17,21 @@ app.get('/ping', (req, res) => {
 
 app.post('/verify/:platform', async (req, res) => {
   const { platform } = req.params;
-  const { accountId, handle, proof, challenge } = req.body;
+  let { accountId, handle, proof, challenge } = req.body;
 
   if (platform in verifiers) {
     const { [platform]: verifier } = verifiers;
 
     // @TODO: Implement new Challenge signature in order to get accountId and handle
-    const verified = await verifier.verify(accountId, handle, proof, challenge);
+    const verifiedResult = await verifier.verify(accountId, handle, proof, challenge);
+    let verified = null;
+
+    if (platform === "twitter") {
+      verified = verifiedResult.result;
+      handle = verifiedResult?.handle;
+    } else {
+      verified = verifiedResult;
+    }
 
     if (verified) {
       const badge = await badger.issue({
@@ -32,6 +40,13 @@ app.post('/verify/:platform', async (req, res) => {
         handle,
         proof
       });
+
+      if (platform === "twitter") {
+        return res.status(200).json({
+          ...badge,
+          handle: handle?.toLowerCase()
+        });
+      }
 
       return res.status(200).json(badge);
     }

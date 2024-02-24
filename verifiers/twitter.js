@@ -14,34 +14,26 @@ export default class TwitterVerifier extends AbstractVerifier {
     this.auth = new TwitterAuth();
   }
   async verify(accountId, handle, proof, encodedChallenge) {
-    const challenge = this.auth.decodeChallenge(encodedChallenge);
-    const isValidChallenge = this.verifyChallenge(challenge);
-    
-    if (isValidChallenge) {
-      // We can trust these values now
-      const [ initialAccountId, initialHandle ] = challenge.challenge.toLowerCase().split(",");
-      accountId = accountId.toLowerCase();
+    const accessToken = await TwitterAPI.getUserAccessToken({
+      code: proof,
+      redirectUri: this.getRedirectUri(),
+      codeVerifier: this.getCodeChallenge()
+    });
 
-      const isValidRequest = initialAccountId === accountId;
+    if (accessToken) {
+      const twitterHandle = await TwitterAPI.getUserHandle(accessToken);
 
-      if (isValidRequest) {
-        const accessToken = await TwitterAPI.getUserAccessToken({
-          code: proof,
-          redirectUri: this.getRedirectUri(),
-          codeVerifier: this.getCodeChallenge()
-        });
-
-        if (accessToken) {
-          const twitterHandle = await TwitterAPI.getUserHandle(accessToken);
-
-          if (initialHandle === twitterHandle.toLowerCase()) {
-            return true;
-          }
-        }
+      if (typeof twitterHandle === "string") {
+        return {
+          result: true,
+          handle: twitterHandle
+        };
       }
     }
 
-    return false;
+    return {
+      result: false
+    };
   }
   getChallenge(accountId, handle) {
     const state = this.auth.generateChallenge(accountId, handle);
