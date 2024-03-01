@@ -26,7 +26,7 @@ app.post('/verify/:platform', async (req, res) => {
     const verifiedResult = await verifier.verify(accountId, handle, proof, challenge);
     let verified = null;
 
-    if (platform === "twitter") {
+    if (platform === "twitter" || "google") {
       verified = verifiedResult.result;
       handle = verifiedResult?.handle;
     } else {
@@ -41,7 +41,7 @@ app.post('/verify/:platform', async (req, res) => {
         proof
       });
 
-      if (platform === "twitter") {
+      if (platform === "twitter" || "google") {
         return res.status(200).json({
           ...badge,
           handle: handle
