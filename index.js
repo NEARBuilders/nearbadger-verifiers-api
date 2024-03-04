@@ -1,5 +1,4 @@
 import App from './app.js';
-import { ethers } from 'ethers';
 
 const port = process.env.PORT || 3000;
 
