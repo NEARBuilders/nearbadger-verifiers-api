@@ -1,6 +1,7 @@
 import badger from '../utils/nearbadger.js';
 import { GoogleAuth, GoogleAPI } from '../utils/google.js';
 import AbstractVerifier from './verifier.js';
+import { ethers } from 'ethers';
 
 const DEFAULT_REDIRECT_URI = 'https://near.social/mattb.near/widget/NearBadger.Pages.Authentication';
 const GOOGLE_CODE_CHALLENGE = 'nearbadger';
@@ -28,7 +29,9 @@ export default class GoogleVerifier extends AbstractVerifier {
       if (typeof googleHandle === "string") {
         return {
           result: true,
-          handle: googleHandle.toLowerCase()
+          handle: ethers.sha256(
+            Buffer.from(googleHandle.toLowerCase())
+          )
         };
       }
     }
