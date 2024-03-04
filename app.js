@@ -11,6 +11,8 @@ app.use(express.json());
 app.use(cors(config.cors))
 app.use(config.rateLimit);
 
+const WEB2_PLATFORMS = ["twitter", "google"];
+
 app.get('/ping', (req, res) => {
   return res.status(200).json({"ping": "pong"});
 });
@@ -26,7 +28,7 @@ app.post('/verify/:platform', async (req, res) => {
     const verifiedResult = await verifier.verify(accountId, handle, proof, challenge);
     let verified = null;
 
-    if (platform === "twitter") {
+    if (WEB2_PLATFORMS.includes(platform)) {
       verified = verifiedResult.result;
       handle = verifiedResult?.handle;
     } else {
@@ -41,7 +43,7 @@ app.post('/verify/:platform', async (req, res) => {
         proof
       });
 
-      if (platform === "twitter") {
+      if (WEB2_PLATFORMS.includes(platform)) {
         return res.status(200).json({
           ...badge,
           handle: handle
