@@ -5,16 +5,16 @@ import * as config from './config.js';
 import verifiers from './verifiers/index.js';
 import badger from './utils/nearbadger.js';
 import { NearAccountInfo } from './utils/near.js';
-
+import * as path from 'path';
 const app = express();
 app.use(express.json());
 app.use(cors(config.cors))
 app.use(config.rateLimit);
-
-const WEB2_PLATFORMS = ["twitter", "google"];
+const __dirname = path.resolve();
+const WEB2_PLATFORMS = ["twitter", "google", "telegram"];
 
 app.get('/ping', (req, res) => {
-  return res.status(200).json({"ping": "pong"});
+  return res.status(200).json({ "ping": "pong" });
 });
 
 app.post('/verify/:platform', async (req, res) => {
@@ -57,7 +57,7 @@ app.post('/verify/:platform', async (req, res) => {
   }
 
   return res.status(400).json({
-      error: "Bad request"
+    error: "Bad request"
   });
 });
 
@@ -84,7 +84,7 @@ app.post('/sign/connected-contracts', async (req, res) => {
     const connectedContracts = await NearAccountInfo.getConnectedContracts(accountId);
 
     try {
-      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo: connectedContracts});
+      const signature = await badger.issueSignedAccountInfoStamp({ accountId, accountInfo: connectedContracts });
       return res.status(200).json({ signature });
     } catch (error) {
       return res.status(500).json({ error: "Unable to sign message. Please try again" });
@@ -100,12 +100,12 @@ app.post('/sign/account-age', async (req, res) => {
     const accountInfo = await NearAccountInfo.getAccountAge(accountId);
 
     try {
-      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      const signature = await badger.issueSignedAccountInfoStamp({ accountId, accountInfo });
       return res.status(200).json({ signature });
     }
     catch (error) {
       return res.status(500).json({ error: "Unable to sign message. Please try again" });
-    } 
+    }
   } catch (error) {
     return res.status(500).json({ error: "Unable to verify account info" });
   }
@@ -118,7 +118,7 @@ app.post('/sign/account-balance', async (req, res) => {
     const accountInfo = await NearAccountInfo.getAccountBalance(accountId);
 
     try {
-      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      const signature = await badger.issueSignedAccountInfoStamp({ accountId, accountInfo });
       return res.status(200).json({ signature });
     }
     catch (error) {
@@ -136,12 +136,12 @@ app.post('/sign/account/social-followers', async (req, res) => {
     const accountInfo = await NearAccountInfo.getAccountSocialFollowers(accountId);
 
     try {
-      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      const signature = await badger.issueSignedAccountInfoStamp({ accountId, accountInfo });
       return res.status(200).json({ signature });
     }
     catch (error) {
       return res.status(500).json({ error: "Unable to sign message. Please try again" });
-    } 
+    }
   } catch (error) {
     return res.status(500).json({ error: `Unable to verify account near social info` });
   }
@@ -154,12 +154,12 @@ app.post('/sign/account/social-followings', async (req, res) => {
     const accountInfo = await NearAccountInfo.getAccountSocialFollowings(accountId);
 
     try {
-      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      const signature = await badger.issueSignedAccountInfoStamp({ accountId, accountInfo });
       return res.status(200).json({ signature });
     }
     catch (error) {
       return res.status(500).json({ error: "Unable to sign message. Please try again" });
-    } 
+    }
   } catch (error) {
     return res.status(500).json({ error: "Unable to verify account near social info" });
   }
@@ -173,16 +173,20 @@ app.post('/sign/account/transaction-count', async (req, res) => {
     const accountInfo = await NearAccountInfo.getAccountTxnInfo(accountId);
 
     try {
-      const signature = await badger.issueSignedAccountInfoStamp({accountId, accountInfo});
+      const signature = await badger.issueSignedAccountInfoStamp({ accountId, accountInfo });
       return res.status(200).json({ signature });
     }
     catch (error) {
       return res.status(500).json({ error: "Unable to sign message. Please try again" });
-    } 
+    }
   } catch (error) {
     return res.status(500).json({ error: "Unable to verify account txn info" });
   }
 
+});
+
+app.get('/telegram-auth', async (req, res) => {
+  res.sendFile(path.join(__dirname, '/telegram-auth.html'));
 });
 
 export default app;
