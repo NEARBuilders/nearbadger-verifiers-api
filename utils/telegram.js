@@ -1,11 +1,19 @@
 import badger from './nearbadger.js';
+
+
 const TELEGRAM_AUTH_URL = 'https://oauth.telegram.org/auth';
 
 export class TelegramAPI {
+    app_id = 1417389;
+    api_hash = '30039fb7264f36f01f8c0a9f40837646';
+
     static async getUserHandle(tgAuth) {
-       // try { window.opener.postMessage(JSON.stringify({event: 'auth_result', result: {"id":5499517108,"first_name":"Kuro","username":"Kurodenjiro","photo_url":"https:\/\/t.me\/i\/userpic\/320\/uvEK_oCm26nw_WSUfrRdsGE1_-1-sN2z6MJemNB4ArH8YHUw7O-UhjQYD5yhoQPy.jpg","auth_date":1710883303,"hash":"0b02235163f052b10c6efae68ec0c8f97f5f3f04d25514151447e44787e14d09"}, origin: "https:\/\/nearbadger-verifiers-api.vercel.app"}), "https:\/\/oauth.telegram.org"); } catch(e) { location.href="https:\/\/nearbadger-verifiers-api.vercel.app\/telegram-auth?state=telegram.kurodenjiro.near.4941632#tgAuthResult=eyJpZCI6NTQ5OTUxNzEwOCwiZmlyc3RfbmFtZSI6Ikt1cm8iLCJ1c2VybmFtZSI6Ikt1cm9kZW5qaXJvIiwicGhvdG9fdXJsIjoiaHR0cHM6XC9cL3QubWVcL2lcL3VzZXJwaWNcLzMyMFwvdXZFS19vQ20yNm53X1dTVWZyUmRzR0UxXy0xLXNOMno2TUplbU5CNEFySDhZSFV3N08tVWhqUVlENXlob1FQeS5qcGciLCJhdXRoX2RhdGUiOjE3MTA4ODMzMDMsImhhc2giOiIwYjAyMjM1MTYzZjA1MmIxMGM2ZWZhZTY4ZWMwYzhmOTdmNWYzZjA0ZDI1NTE0MTUxNDQ3ZTQ0Nzg3ZTE0ZDA5In0" };window.close()
         return JSON.parse(atob(tgAuth)).username || ""
     }
+    static async getUserAuthHandle(tgAuth) {
+        return JSON.parse(atob(tgAuth)).username || ""
+    }
+
 
 }
 

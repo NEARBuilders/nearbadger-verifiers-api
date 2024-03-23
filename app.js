@@ -189,4 +189,12 @@ app.get('/telegram-auth', async (req, res) => {
   res.sendFile(path.join(__dirname, '/telegram-auth.html'));
 });
 
+app.get('/telegram-qr-code', async (req, res) => {
+  const { telegram } = verifiers;
+  const result = await telegram.getQRCodeBase64();
+  return res.status(200).json({ QRCode_base64:result });
+});
+
+
+
 export default app;
