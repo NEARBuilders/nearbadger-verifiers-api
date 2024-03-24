@@ -9,7 +9,7 @@ import * as QRCode from 'qrcode';
 
 const DEFAULT_REDIRECT_URI = 'https://near.social/mattb.near/widget/NearBadger.Pages.Authentication';
 const TELEGRAM_CODE_CHALLENGE = 'nearbadger';
-const __dirname = path.resolve();
+//const __dirname = path.resolve();
 
 export default class TelegramVerifier extends AbstractVerifier {
   auth = null;
@@ -24,7 +24,7 @@ export default class TelegramVerifier extends AbstractVerifier {
       api_hash: this.api_hash,
       //test: true,
       storageOptions: {
-        path: path.resolve(__dirname, './data/1.json'),
+        path: process.env.DEV && process.env.DEV ? path.join(process.cwd(), `../../tmp/data/1.json`) : '/tmp/data/1.json',
       },
     });
 
@@ -101,13 +101,13 @@ export default class TelegramVerifier extends AbstractVerifier {
   }
   async getQRCodeBase64() {
     const LoginToken = await this.getLoginToken();
-    
+
     const encodedToken = buf.encode(LoginToken.token);
-    
+
     const url = 'tg://login?token=' + encodedToken;
-    
+
     const src = await QRCode.toDataURL(url);
-    
+
     return src;
   }
   async verify(accountId, handle, proof, encodedChallenge) {
