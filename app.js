@@ -185,16 +185,59 @@ app.post('/sign/account/transaction-count', async (req, res) => {
 
 });
 
-app.get('/telegram-auth', async (req, res) => {
-  res.sendFile(path.join(__dirname, '/telegram-auth.html'));
-});
 
-app.get('/telegram-qr-code', async (req, res) => {
+
+app.get('/telegram/qr-code', async (req, res) => {
   const { telegram } = verifiers;
   const result = await telegram.getQRCodeBase64();
-  return res.status(200).json({ QRCode_base64:result });
+  return res.status(200).json({ QRCode_base64: result });
 });
 
+app.get('/telegram/get-user/', async (req, res) => {
+  const { telegram } = verifiers;
+  const result = await telegram.getUser();
+  return res.status(200).json({ user: result });
+});
 
+app.get('/auth-callback', async (req, res) => {
+  let { token } = req.body;
+  console.log(token)
+  const { telegram } = verifiers;
+  const result = await telegram.authCallback(req.query.token);
+  return res.status(200).json({ user: result });
+});
+
+app.post('/telegram/send-code/', async (req, res) => {
+  const { telegram } = verifiers;
+  let { phone } = req.body;
+  try {
+    const result = await telegram.sendCode(phone);
+    return res.status(200).json({ phone_code_hash: result.phone_code_hash });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+});
+
+app.post('/telegram/sign-in/', async (req, res) => {
+  let { code, phone, phone_code_hash } = req.body;
+  const { telegram } = verifiers;
+  try {
+    const signInResult = await telegram.signIn(code, phone, phone_code_hash);
+    return res.status(200).json({ user: signInResult });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+});
+
+app.post('/telegram/sign-up/', async (req, res) => {
+  let { phone, phone_code_hash, first_name, last_name } = req.body;
+  const { telegram } = verifiers;
+  try {
+    const signUpResult = await telegram.signUp(phone, phone_code_hash, first_name, last_name);
+    return res.status(200).json({ user: signUpResult._ });
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+});
 
 export default app;

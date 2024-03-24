@@ -56,11 +56,74 @@ export default class TelegramVerifier extends AbstractVerifier {
       console.log('updateShortSentMessage:', updateInfo);
     });
   }
+
   async getLoginToken() {
-    return await this.call('auth.exportLoginToken', {
+    return await this.mtproto.call('auth.exportLoginToken', {
       app_id: this.app_id,
       api_hash: this.api_hash,
       except_ids: [],
+    });
+  }
+
+  async getUser() {
+    try {
+      const user = await this.call('users.getFullUser', {
+        id: {
+          _: 'inputUserSelf',
+        },
+      });
+
+      return user;
+    } catch (error) {
+      return null;
+    }
+  }
+  async signIn(code, phone, phone_code_hash) {
+    return await this.call('auth.signIn', {
+      phone_code: code,
+      phone_number: phone,
+      phone_code_hash: phone_code_hash,
+    });
+  }
+  async sendCode(phone) {
+    return this.call('auth.sendCode', {
+      phone_number: phone,
+      settings: {
+        _: 'codeSettings',
+      },
+    });
+  }
+  async getPassword() {
+    return this.call('account.getPassword');
+  }
+  async authCallback(token) {
+    token = buf.decode("AQJ3oABmjiwvHHpecM5q0PuOhzFHBnEwB88sA7qCcO2vDg==")
+    console.log(token)
+    try {
+      //const res = await this.call('auth.importLoginToken', { token: token });
+      const res = await this.call('auth.acceptLoginToken', { token: "AQJ3oABmjiwvHHpecM5q0PuOhzFHBnEwB88sA7qCcO2vDg==" });
+      return res
+    } catch (error) {
+      return error
+    }
+
+  }
+  async checkPassword({ srp_id, A, M1 }) {
+    return this.call('auth.checkPassword', {
+      password: {
+        _: 'inputCheckPasswordSRP',
+        srp_id,
+        A,
+        M1,
+      },
+    });
+  }
+  async signUp(phone, phone_code_hash, first_name, last_name) {
+    return this.call('auth.signUp', {
+      phone_number: phone,
+      phone_code_hash: phone_code_hash,
+      first_name: first_name,
+      last_name: last_name,
     });
   }
   async call(method, params, options = {}) {
@@ -108,14 +171,16 @@ export default class TelegramVerifier extends AbstractVerifier {
 
     const src = await QRCode.toDataURL(url);
 
-    return src;
+    return { src, encodedToken };
   }
+
   async verify(accountId, handle, proof, encodedChallenge) {
-    const telegramHandle = await TelegramAPI.getUserHandle(proof);
-    if (typeof telegramHandle === "string") {
+    const { user } = await this.getUser();
+    console.log(user)
+    if (user.users[0].access_hash == proof) {
       return {
         result: true,
-        handle: telegramHandle.toLowerCase()
+        handle: proof
       };
     }
     return {
