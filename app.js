@@ -166,7 +166,6 @@ app.post('/sign/account/social-followings', async (req, res) => {
 
 });
 
-
 app.post('/sign/account/transaction-count', async (req, res) => {
   try {
     const { accountId } = req.body;
@@ -185,8 +184,6 @@ app.post('/sign/account/transaction-count', async (req, res) => {
 
 });
 
-
-
 app.get('/telegram/qr-code', async (req, res) => {
   const { telegram } = verifiers;
   const result = await telegram.getQRCodeBase64();
@@ -199,13 +196,6 @@ app.get('/telegram/get-user/', async (req, res) => {
   return res.status(200).json({ user: result });
 });
 
-app.get('/auth-callback', async (req, res) => {
-  let { token } = req.body;
-  console.log(token)
-  const { telegram } = verifiers;
-  const result = await telegram.authCallback(req.query.token);
-  return res.status(200).json({ user: result });
-});
 
 app.post('/telegram/send-code/', async (req, res) => {
   const { telegram } = verifiers;
