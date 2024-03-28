@@ -4,15 +4,6 @@ import badger from './nearbadger.js';
 export class TelegramAPI {
     app_id = 1417389;
     api_hash = '30039fb7264f36f01f8c0a9f40837646';
-
-    static async getUserHandle(tgAuth) {
-        return JSON.parse(atob(tgAuth)).username || ""
-    }
-    static async getUserAuthHandle(tgAuth) {
-        return JSON.parse(atob(tgAuth)).username || ""
-    }
-
-
 }
 
 export class TelegramAuth {

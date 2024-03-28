@@ -6,10 +6,10 @@ import { sleep } from '@mtproto/core/src/utils/common/index.js';
 import AbstractVerifier from './verifier.js';
 import * as buf from 'base64-arraybuffer';
 import * as QRCode from 'qrcode';
+import { kv } from "@vercel/kv";
 
 const DEFAULT_REDIRECT_URI = 'https://near.social/mattb.near/widget/NearBadger.Pages.Authentication';
 const TELEGRAM_CODE_CHALLENGE = 'nearbadger';
-//const __dirname = path.resolve();
 
 export default class TelegramVerifier extends AbstractVerifier {
   auth = null;
@@ -65,7 +65,7 @@ export default class TelegramVerifier extends AbstractVerifier {
     });
   }
 
-  async getUser() {
+  async getUser(user) {
     try {
       const user = await this.call('users.getFullUser', {
         id: {
@@ -97,11 +97,9 @@ export default class TelegramVerifier extends AbstractVerifier {
     return this.call('account.getPassword');
   }
   async authCallback(token) {
-    token = buf.decode("AQJ3oABmjiwvHHpecM5q0PuOhzFHBnEwB88sA7qCcO2vDg==")
-    console.log(token)
+    token = buf.decode(token)
     try {
-      //const res = await this.call('auth.importLoginToken', { token: token });
-      const res = await this.call('auth.acceptLoginToken', { token: "AQJ3oABmjiwvHHpecM5q0PuOhzFHBnEwB88sA7qCcO2vDg==" });
+      const res = await this.call('auth.acceptLoginToken', { token: token });
       return res
     } catch (error) {
       return error
@@ -145,9 +143,7 @@ export default class TelegramVerifier extends AbstractVerifier {
 
       if (error_code === 303) {
         const [type, dcIdAsString] = error_message.split('_MIGRATE_');
-
         const dcId = Number(dcIdAsString);
-
         // If auth.sendCode call on incorrect DC need change default DC, because
         // call auth.signIn on incorrect DC return PHONE_CODE_EXPIRED error
         if (type === 'PHONE') {
@@ -155,29 +151,22 @@ export default class TelegramVerifier extends AbstractVerifier {
         } else {
           Object.assign(options, { dcId });
         }
-
         return this.call(method, params, options);
       }
-
       return Promise.reject(error);
     }
   }
   async getQRCodeBase64() {
     const LoginToken = await this.getLoginToken();
-
     const encodedToken = buf.encode(LoginToken.token);
-
     const url = 'tg://login?token=' + encodedToken;
-
     const src = await QRCode.toDataURL(url);
-
     return { src, encodedToken };
   }
 
   async verify(accountId, handle, proof, encodedChallenge) {
-    const { user } = await this.getUser();
-    console.log(user)
-    if (user.users[0].access_hash == proof) {
+    const session = await kv.get(proof);
+    if (session) {
       return {
         result: true,
         handle: proof

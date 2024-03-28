@@ -1,16 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import * as config from './config.js';
-
 import verifiers from './verifiers/index.js';
 import badger from './utils/nearbadger.js';
+import { kv } from "@vercel/kv";
 import { NearAccountInfo } from './utils/near.js';
-import * as path from 'path';
+
 const app = express();
 app.use(express.json());
 app.use(cors(config.cors))
 app.use(config.rateLimit);
-const __dirname = path.resolve();
 const WEB2_PLATFORMS = ["twitter", "google", "telegram"];
 
 app.get('/ping', (req, res) => {
@@ -190,9 +189,10 @@ app.get('/telegram/qr-code', async (req, res) => {
   return res.status(200).json({ QRCode_base64: result });
 });
 
-app.get('/telegram/get-user/', async (req, res) => {
+app.get('/telegram/get-user/:userId', async (req, res) => {
+  const { userId } = req.params;
   const { telegram } = verifiers;
-  const result = await telegram.getUser();
+  const result = await telegram.getUser(userId);
   return res.status(200).json({ user: result });
 });
 
@@ -213,6 +213,8 @@ app.post('/telegram/sign-in/', async (req, res) => {
   const { telegram } = verifiers;
   try {
     const signInResult = await telegram.signIn(code, phone, phone_code_hash);
+    console.log(signInResult.user.access_hash)
+    await kv.set(signInResult.user.access_hash,signInResult.user.username.toLowerCase());
     return res.status(200).json({ user: signInResult });
   } catch (error) {
     return res.status(500).json({ error: error });
