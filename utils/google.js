@@ -57,9 +57,10 @@ export class GoogleAPI {
         codeVerifier
     }) {
         return {
-            code,
+            code: decodeURIComponent(code),
             client_id: process.env.GOOGLE_OAUTH_CLIENT_ID,
             client_secret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+            code_verifier: codeVerifier,
             redirect_uri: redirectUri,
             grant_type: 'authorization_code',
         };

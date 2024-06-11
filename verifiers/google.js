@@ -4,7 +4,7 @@ import AbstractVerifier from './verifier.js';
 import { ethers } from 'ethers';
 
 const DEFAULT_REDIRECT_URI = 'https://near.social/mattb.near/widget/NearBadger.Pages.Authentication';
-const GOOGLE_CODE_CHALLENGE = 'nearbadger';
+const GOOGLE_CODE_CHALLENGE = 'nearbadger-google-auth-verification'; // dbgKAsK-CvaxuoYw2aSlHU5Pqwm-8CME0tk60XJoQCA
 
 export default class GoogleVerifier extends AbstractVerifier {
   auth = null;
@@ -20,7 +20,6 @@ export default class GoogleVerifier extends AbstractVerifier {
       redirectUri: this.getRedirectUri(),
       codeVerifier: this.getCodeChallenge()
     });
-
 
     if (accessToken) {
       const googleHandle = await GoogleAPI.getUserHandle(accessToken);
